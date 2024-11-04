@@ -21,11 +21,10 @@
   const height = 600;
 
   // Define different scales for each scroll step
-  const scaleFactor = [1500, 550, 200, 10]; // Adjust scales as needed
+  const scaleFactor = [1500, 550]; // Adjust scales as needed
   const centerFactor = [
     [-77.0, 4],
     [-82.030179, 24.593334],
-    [-77.0, 4],
   ];
 
   const tweenedScale = tweened(scaleFactor[0], {
@@ -38,10 +37,6 @@
       tweenedScale.set(scaleFactor[0]);
     } else if (index == 1) {
       tweenedScale.set(scaleFactor[1]);
-    } else if (index == 2) {
-      tweenedScale.set(scaleFactor[2]);
-    } else if (index == 3) {
-      tweenedScale.set(scaleFactor[3]);
     }
   }
 
@@ -117,6 +112,7 @@
     { latlon: [-81.702563, 12.586067], color: "#51d1f5", total: 279243 },
     { latlon: [-81.703935, 12.5744111], color: "#51d1f5", total: 5148 },
   ];
+
   const venezula = {
     type: "Feature",
     properties: {
@@ -30480,6 +30476,7 @@
         viewBox="0 0 {width} {height}"
         style="max-width: 100%; height: auto;"
       >
+        <!-- <text y="300">1000 people</text> -->
         {#if land && borders}
           <path d="{geoPath(getProjection())(land)}" fill="#aba9a8"></path>
           <path
@@ -30489,6 +30486,9 @@
           ></path>
         {/if}
         {#if index == 0}
+          <circle cx="20" cy="300" r="{radiusScale(5000000)}" fill="#51d1f5"
+          ></circle>
+          <text x="50" y="306">5M People</text>
           <!-- Draw circles at data points -->
           {#each data as point}
             <circle
@@ -30500,7 +30500,11 @@
             ></circle>
           {/each}
         {/if}
+
         {#if index == 1}
+          <circle cx="20" cy="300" r="{radiusScale(5000000)}" fill="#a60be3"
+          ></circle>
+          <text x="50" y="306">5M People</text>
           <path
             d="{geoPath(getProjection())(venezula)}"
             fill="#fcba03"
@@ -30520,7 +30524,15 @@
         {/if}
       </svg>
     </div>
-
+    <!-- {#if selected_datapoint != undefined}
+      <div
+        id="tooltip"
+        style="left: {getProjection()(selected_datapoint.latlon)[0] +
+          10}px; top: {getProjection()(selected_datapoint.latlon)[1] - 10}px"
+      >
+        <p>Lat/Lon: {selected_datapoint.latlon}</p>
+      </div>
+    {/if} -->
     <div slot="foreground">
       <section class="{index === 0 ? 'active' : ''}">
         <i>"Entradas de extranjeros a Colombia"</i> is a dataset published by
@@ -30534,54 +30546,22 @@
         >
       </section>
       <section class="{index === 1 ? 'active' : ''}">
-        Over 241 unique nationalities have entered Columbia. Among these,
+        Around 225 unique nationalities have entered Columbia. Among these,
         citizens of the United States make up a notable <b
           ><span style="color:#a60be3; display: inline;">20%</span></b
         >, closely followed by Venezuelans at
-        <b><span style="color:#fcba03; display: inline;">19%</span></b>. However
-        Venezulan citizens frequently use smaller ports of entry closer to the
-        border it shares with Columbia. At
-        <b><span style="color:#fcba03; display: inline;">30%</span></b>.of ports
-        of entry, Venezuelan citizens are the most common visitors, followed by
-        U.S. citizens at
-        <b><span style="color:#a60be3; display: inline;">20%</span></b>.
+        <b><span style="color:#fcba03; display: inline;">19%</span></b>.
+        <p>
+          However Venezulan citizens frequently use smaller ports of entry
+          closer to the border it shares with Columbia. At
+          <b><span style="color:#fcba03; display: inline;">30%</span></b> of
+          ports of entry, Venezuelan citizens are the most common visitors,
+          followed by U.S. citizens at
+          <b><span style="color:#a60be3; display: inline;">20%</span></b>.
+        </p>
       </section>
-      <section class="{index === 2 ? 'active' : ''}"></section>
-      <section class="{index === 3 ? 'active' : ''}">section 4</section>
     </div>
   </Scroller>
-
-  <!-- <div class="sidebar">
-    <Scrolly bind:value>
-      {#each steps as text, i}
-        <div class="step" class:active="{value === i}">
-          {@html text}
-        </div>
-      {/each}
-    </Scrolly>
-  </div>
-
-  <Scrolly bind:value>
-    {#each steps as text, i}
-      <div class="step-scroll" class:active="{value === i}">
-        <svg
-          {width}
-          {height}
-          viewBox="0 0 {width} {height}"
-          style="max-width: 100%; height: auto;"
-        >
-          {#if land && borders}
-            <path d="{geoPath(getProjection())(land)}" fill="#000"></path>
-            <path
-              d="{geoPath(getProjection())(borders)}"
-              fill="none"
-              stroke="#fff"
-            ></path>
-          {/if}
-        </svg>
-      </div>
-    {/each}
-  </Scrolly> -->
   Made with 💖 by <a href="url">Victoria Labmayr </a>
 </div>
 
@@ -30589,6 +30569,7 @@
   /* Main scrollytelling container */
   .scrollytelling-container {
     font-family: Verdana, sans-serif;
+    font-size: 15pt;
   }
 
   [slot="background"] {
@@ -30600,18 +30581,11 @@
       transform 0.3s ease,
       opacity 0.3s ease;
     margin-left: 350px;
-  }
-
-  [slot="foreground"] {
-    pointer-events: none;
-  }
-
-  [slot="foreground"] section {
     pointer-events: all;
   }
 
   section {
-    height: 41vh;
+    height: 100vh;
     width: 20%;
     background-color: #f5f5f5;
     display: block;
@@ -30630,5 +30604,10 @@
     transition:
       transform 0.1s ease,
       opacity 0.5s ease;
+  }
+
+  .legend {
+    bottom: 10px;
+    font-size: 6pt;
   }
 </style>
