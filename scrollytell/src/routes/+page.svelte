@@ -30562,6 +30562,7 @@
       </section>
     </div>
   </Scroller>
+  <img src="./vsfg.png" height="80" />
   Made with 💖 by <a href="url">Victoria Labmayr </a>
 </div>
 
